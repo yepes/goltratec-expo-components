@@ -1,133 +1,47 @@
 import CustomSelectTwo from "../src/components/CustomSelectTwo";
-import {View, Text, Pressable, ScrollView, Button, Platform} from "react-native";
-import MultiSelect from "react-native-multiple-select";
-import {useCallback, useMemo, useRef, useState} from "react";
+import React, {useMemo, useState} from "react";
 import mockData from "../src/data";
-import {GestureHandlerRootView} from "react-native-gesture-handler";
-import {BottomSheetModal, BottomSheetModalProvider} from "@gorhom/bottom-sheet";
+import {View, StyleSheet, Text} from "react-native";
 
-const items = mockData;
-export default function App() {
+export default function Index() {
+
+    const isMultiple = true
+    const [search, setSearch] = useState("");
+    const data = useMemo(() => mockData.filter(item => {
+        return item.name.toLowerCase().includes(search.toLowerCase())
+    }), [search]);
     const [selectedItems, setSelectedItems] = useState([]);
-    const ref = useRef()
-
-    const onSelectedItemsChange = items => {
+    const onChange = (items) => {
+        console.log('onChange');
+        console.log(items);
         setSelectedItems(items);
     }
-    const handleRemoveItem = removedItem => {
-        console.log(removedItem)
-        const filtered = selectedItems.filter(oldItem => oldItem !== removedItem.id)
-        console.log({filtered, selectedItems})
 
-        setSelectedItems(filtered)
+    const clearValues = () => {
+        setSelectedItems([])
     }
 
-    const sheetRef = useRef(null);
-    const snapPoints = useMemo(() => ["95%"], []);
-    const handleSheetChange = useCallback((index) => {
-        console.log("handleSheetChange", index);
-        if (index === 0 && selectedItems.length === 0) {
-            console.log({length: selectedItems.length})
-            ref.current._toggleSelector()
-        }
-    }, [selectedItems]);
-
-    const handlePresentModalPress = useCallback(() => {
-        // ref.current._toggleSelector()
-        sheetRef.current?.present();
-    }, []);
-
-    return <GestureHandlerRootView style={{flex: 1}}>
-
-        <Text>{JSON.stringify(Platform.OS, null, 2)}</Text>
-
-        <Button title="Show Sheet" onPress={() => handlePresentModalPress()}/>
-        <Button title="Focus" onPress={() => console.log(ref.current._toggleSelector())}/>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Pressable onPress={handlePresentModalPress}>
-            <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Cliente</Text>
-        </Pressable>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Campo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Antepenultimo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Penultimo</Text>
-        <Text style={{marginBottom: 20, padding: 6, borderWidth: 1, borderColor: 'gray'}}>Ultimo</Text>
-
-        <BottomSheetModalProvider>
-            <BottomSheetModal
-                ref={sheetRef}
-                snapPoints={snapPoints}
-                onChange={handleSheetChange}
-                keyboardBehavior={Platform.OS === 'ios' ? "interactive" : 'fullScreen'}
-                keyboardBlurBehavior="restore"
-            >
-                <Text>{JSON.stringify(selectedItems.length, null, 2)}</Text>
-                <MultiSelect
-                    hideTags={false}
-                    items={items}
-                    uniqueKey="id"
-                    ref={ref}
-                    // fixedHeight={true}
-                    onSelectedItemsChange={onSelectedItemsChange}
-                    selectedItems={selectedItems}
-                    selectText="Selecciona clientes"
-                    searchInputPlaceholderText="Buscar cliente..."
-                    onChangeInput={(text) => console.log(text)}
-                    tagRemoveIconColor="#CCC"
-                    tagBorderColor="#CCC"
-                    tagTextColor="#CCC"
-                    selectedItemTextColor="#CCC"
-                    selectedItemIconColor="#CCC"
-                    selectedText="Seleccionados"
-                    itemTextColor="#000"
-                    displayKey="name"
-                    searchInputStyle={{color: 'red'}}
-                    submitButtonColor="#CCC"
-                    submitButtonText="Enviar"
-                    single={false}
-                    // hideDropdown={true}
-                    canAddItems={true}
-                />
-            </BottomSheetModal>
-        </BottomSheetModalProvider>
-
-
-    </GestureHandlerRootView>
-}
-
-const SelectedItems = ({currentItems, handleRemoveItem}) => {
-    const parsedItems = currentItems.map(itemId => items.find(i => i.id === itemId))
-
-    return <View>
-        {parsedItems.map(item => <SelectedItem key={item.id} item={item} onPress={handleRemoveItem}/>)}
+    return <View style={s.wrapper}>
+        <View>
+            <Text>Parent View</Text>
+            <Text>{JSON.stringify({selectedItems}, null, 2)}</Text><Text>{JSON.stringify(data, null, 2)}</Text>
+        </View>
+        <CustomSelectTwo
+            isMultiple={isMultiple}
+            clearValues={clearValues}
+            data={data}
+            onChange={onChange}
+            selectedItems={selectedItems}
+            searchValue={search}
+            onSearchTextChange={v => setSearch(v)}
+        />
     </View>
 }
 
-const SelectedItem = ({item, onPress}) => {
-    return <View>
-        <Pressable onPress={() => onPress(item)}>
-            <Text>{item.name} - {item.id}</Text>
-        </Pressable>
-    </View>
-}
-
+const s = StyleSheet.create({
+    wrapper: {
+        borderWidth: 1,
+        borderColor: "red",
+        flex: 1
+    }
+})

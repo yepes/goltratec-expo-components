@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a90fe835-dae4-4dd0-a84d-cff148519f3b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/old.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/babel.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/babel.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/two.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CustomSelectTwo.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CustomSelectTwo.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +55,9 @@
       <workItem from="1677757018572" duration="666000" />
       <workItem from="1677757754587" duration="4846000" />
       <workItem from="1677837890134" duration="6975000" />
-      <workItem from="1678096856995" duration="10087000" />
+      <workItem from="1678096856995" duration="10685000" />
+      <workItem from="1678176498347" duration="4251000" />
+      <workItem from="1678190788481" duration="3476000" />
     </task>
     <servers />
   </component>

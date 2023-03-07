@@ -7,18 +7,10 @@ import {
 } from "@gorhom/bottom-sheet";
 import React, {useCallback, useMemo, useRef, useState} from "react";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
-import mockData from "../data";
 
-export default function CustomSelectTwo() {
 
-    const [search, setSearch] = useState("");
-    const [selectedItems, setSelectedItems] = useState([]);
+export default function CustomSelectTwo({ onChange, searchValue, onSearchTextChange, selectedItems, data, clearValues, isMultiple }) {
 
-    const data = useMemo(() => mockData.filter(item => {
-        console.log({item, search})
-        console.log(item.name.toLowerCase().includes(search.toLowerCase()))
-        return item.name.toLowerCase().includes(search.toLowerCase())
-    }), [search]);
     const sheetRef = useRef(null);
 
     const snapPoints = useMemo(() => ["80%"], []);
@@ -36,44 +28,49 @@ export default function CustomSelectTwo() {
         sheetRef.current?.close();
     }, []);
 
+    const onItemPress = (item) => {
+        const isSelected = selectedItems.includes(item.id);
+        let res = [];
+        if (isSelected) {
+            res = selectedItems.filter(i => i !== item.id)
+        } else {
+            res = [...selectedItems, item.id]
+        }
+        onChange(res);
+    }
+
     const renderItem = useCallback(
         (v) => {
-            console.log(v);
 
             const { item, index } = v
             const isSelected = selectedItems.includes((item.id))
-            return <View style={styles.itemContainer} key={index}>
+            return <Pressable style={styles.itemContainer} key={index} onPress={() => {
+                    onItemPress(item)
+                }}>
 
                 <View>
                     <Text style={styles.title}>{item.name}</Text>
                     <Text>{item.id}</Text>
                 </View>
 
-                <Pressable onPress={() => {
-                    if (isSelected) {
-                        setSelectedItems(selectedItems.filter(i => i !== item.id))
-                    } else {
-                        setSelectedItems([...selectedItems, item.id])
-                    }
-
-                    console.log(item);
-                    // Alert.alert(`Click on ${item.name}`, `Con el id ${item._id}`)
-                }}>
-                    <View style={[styles.button, isSelected && styles.buttonSelected]}/>
-                </Pressable>
-            </View>
+                <View style={[styles.button, isSelected && styles.buttonSelected]}/>
+            </Pressable>
         }, [selectedItems]
     );
 
+    const onSelectedItemPress = (item) => {
+        // fixme
+        onItemPress({id: item.item});
+    }
 
     return (
-        <GestureHandlerRootView style={{flex: 1}}>
             <BottomSheetModalProvider>
                 <View>
-                    <Text>{JSON.stringify({selectedItems}, null, 2)}</Text>
-                    <Button title="Open" onPress={handlePresentModalPress}/>
+                    <Pressable onPress={handlePresentModalPress} style={styles.mainPresstable}>
+                        <Text numberOfLines={1} ellipsizeMode="tail">{selectedItems.join(", ")}</Text>
+                    </Pressable>
+
                     <Button title="Close" onPress={() => handleClosePress()}/>
-                    <Text>{Platform.OS}</Text>
                     <BottomSheetModal
                         ref={sheetRef}
                         snapPoints={snapPoints}
@@ -81,12 +78,29 @@ export default function CustomSelectTwo() {
                         keyboardBehavior={Platform.OS === 'ios' ? "interactive" : 'fullScreen'}
                         keyboardBlurBehavior="restore"
                     >
-                        <FlatList horizontal={true} data={selectedItems} renderItem={i => <Text>{JSON.stringify(i, null, 2)}</Text>} />
-                        {selectedItems.length > 0 && <Button title="limpiar" onPress={() => setSelectedItems([])} />}
-                        <Text>Selecciona un cliente</Text>
-                        <BottomSheetTextInput value={search} style={styles.textInput} onChangeText={(text) => {
-                            setSearch(text)
-                        }}/>
+
+                        {isMultiple && <FlatList
+                            horizontal={true}
+                            data={selectedItems}
+                            ListEmptyComponent={ListEmpty}
+                            style={styles.selectedItemsWrapper}
+                            ItemSeparatorComponent={() => <View style={{ width: 10, backgroundColor: "yellow"}} />}
+                            renderItem={i =>
+                                <ItemSelected
+                                    item={i}
+                                    onPress={() => onSelectedItemPress(i)}
+                                />
+                            } />
+                        }
+
+                        {selectedItems.length > 0 && <Button title="limpiar" onPress={clearValues} />}
+                        <BottomSheetTextInput
+                            value={searchValue}
+                            style={styles.textInput}
+                            onChangeText={(text) => {
+                                onSearchTextChange(text)
+                            }}
+                        />
                         <BottomSheetFlatList
                             data={data}
                             keyExtractor={(i) => i.id}
@@ -94,18 +108,41 @@ export default function CustomSelectTwo() {
                             keyboardDismissMode="interactive"
                             indicatorStyle="black"
                             contentContainerStyle={styles.contentContainer}
-                            // focusHook={useFocusEffect}
                         >
                         </BottomSheetFlatList>
                     </BottomSheetModal>
                 </View>
-
             </BottomSheetModalProvider>
-        </GestureHandlerRootView>
     );
 }
 
+const ItemSelected = ({item, onPress}) => <Pressable style={styles.selectedItem} onPress={onPress}>
+        <Text style={styles.selectedItemText}>{item.item}</Text>
+    </Pressable>
+
+const ListEmpty = () => <Text>Seleccione clientes</Text>
+
 const styles = StyleSheet.create({
+    mainPresstable: {
+      borderWidth: 1,
+      borderColor: "gray",
+      borderRadius: 2,
+        padding: 8
+    },
+    selectedItemsWrapper: {
+        flexGrow: 0
+    },
+    selectedItem: {
+        display: "flex",
+        flexDirection: "row",
+        borderWidth: 1,
+        padding:10,
+        borderColor: 'rgba(0,0,0,.2)',
+        backgroundColor: "white",
+    },
+    selectedItemText: {
+        fontSize: 18
+    },
     textInput: {
         alignSelf: "stretch",
         marginHorizontal: 12,
