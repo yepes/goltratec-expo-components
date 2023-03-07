@@ -1,15 +1,21 @@
 import CustomSelectTwo from "../src/components/CustomSelectTwo";
 import React, {useMemo, useState} from "react";
 import mockData from "../src/data";
-import {View, StyleSheet, Text} from "react-native";
+import {View, StyleSheet, Text, ScrollView} from "react-native";
+import {useQuery} from "@tanstack/react-query";
 
 export default function Index() {
 
     const isMultiple = true
     const [search, setSearch] = useState("");
-    const data = useMemo(() => mockData.filter(item => {
-        return item.name.toLowerCase().includes(search.toLowerCase())
-    }), [search]);
+    // const data = useMemo(() => mockData.filter(item => {
+    //     return item.name.toLowerCase().includes(search.toLowerCase())
+    // }), [search]);
+
+    const { data, isLoading} = useQuery({
+        queryKey: ["swapi", search],
+        queryFn: () => fetch(`https://swapi.dev/api/people/?search=${search}`).then(r => r.json())
+    })
     const [selectedItems, setSelectedItems] = useState([]);
     const onChange = (items) => {
         console.log('onChange');
@@ -24,17 +30,18 @@ export default function Index() {
     return <View style={s.wrapper}>
         <View>
             <Text>Parent View</Text>
-            <Text>{JSON.stringify({selectedItems}, null, 2)}</Text><Text>{JSON.stringify(data, null, 2)}</Text>
         </View>
         <CustomSelectTwo
             isMultiple={isMultiple}
             clearValues={clearValues}
-            data={data}
+            data={data ? data.results : []}
             onChange={onChange}
             selectedItems={selectedItems}
             searchValue={search}
             onSearchTextChange={v => setSearch(v)}
+            isDataLoading={isLoading}
         />
+        {/*<Text>{JSON.stringify(data, null, 2)}</Text>*/}
     </View>
 }
 

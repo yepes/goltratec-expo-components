@@ -1,4 +1,14 @@
-import {Button, Pressable, StyleSheet, Text, TextInput, View, Platform, FlatList} from "react-native";
+import {
+    Button,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    Platform,
+    FlatList,
+    ActivityIndicator
+} from "react-native";
 import {
     BottomSheetFlatList,
     BottomSheetModal,
@@ -9,7 +19,16 @@ import React, {useCallback, useMemo, useRef, useState} from "react";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 
 
-export default function CustomSelectTwo({ onChange, searchValue, onSearchTextChange, selectedItems, data, clearValues, isMultiple }) {
+export default function CustomSelectTwo({
+                                            isDataLoading,
+                                            onChange,
+                                            searchValue,
+                                            onSearchTextChange,
+                                            selectedItems,
+                                            data,
+                                            clearValues,
+                                            isMultiple
+                                        }) {
 
     const sheetRef = useRef(null);
 
@@ -29,12 +48,12 @@ export default function CustomSelectTwo({ onChange, searchValue, onSearchTextCha
     }, []);
 
     const onItemPress = (item) => {
-        const isSelected = selectedItems.includes(item.id);
+        const isSelected = selectedItems.includes(item);
         let res = [];
         if (isSelected) {
-            res = selectedItems.filter(i => i !== item.id)
+            res = selectedItems.filter(i => i !== item)
         } else {
-            res = [...selectedItems, item.id]
+            res = [...selectedItems, item]
         }
         onChange(res);
     }
@@ -42,11 +61,11 @@ export default function CustomSelectTwo({ onChange, searchValue, onSearchTextCha
     const renderItem = useCallback(
         (v) => {
 
-            const { item, index } = v
-            const isSelected = selectedItems.includes((item.id))
+            const {item, index} = v
+            const isSelected = selectedItems.includes(item)
             return <Pressable style={styles.itemContainer} key={index} onPress={() => {
-                    onItemPress(item)
-                }}>
+                onItemPress(item)
+            }}>
 
                 <View>
                     <Text style={styles.title}>{item.name}</Text>
@@ -59,48 +78,52 @@ export default function CustomSelectTwo({ onChange, searchValue, onSearchTextCha
     );
 
     const onSelectedItemPress = (item) => {
-        // fixme
-        onItemPress({id: item.item});
+        onItemPress(item.item);
     }
 
     return (
-            <BottomSheetModalProvider>
-                <View>
-                    <Pressable onPress={handlePresentModalPress} style={styles.mainPresstable}>
-                        <Text numberOfLines={1} ellipsizeMode="tail">{selectedItems.join(", ")}</Text>
-                    </Pressable>
+        <BottomSheetModalProvider>
+            <View>
+                <Pressable onPress={handlePresentModalPress} style={styles.mainPresstable}>
+                    <Text numberOfLines={1} ellipsizeMode="tail">{selectedItems.map(i => i.name).join(", ")}</Text>
+                </Pressable>
 
-                    <Button title="Close" onPress={() => handleClosePress()}/>
-                    <BottomSheetModal
-                        ref={sheetRef}
-                        snapPoints={snapPoints}
-                        onChange={handleSheetChange}
-                        keyboardBehavior={Platform.OS === 'ios' ? "interactive" : 'fullScreen'}
-                        keyboardBlurBehavior="restore"
-                    >
+                <Button title="Close" onPress={() => handleClosePress()}/>
+                <BottomSheetModal
+                    ref={sheetRef}
+                    snapPoints={snapPoints}
+                    onChange={handleSheetChange}
+                    keyboardBehavior={Platform.OS === 'ios' ? "interactive" : 'fullScreen'}
+                    keyboardBlurBehavior="restore"
+                >
 
-                        {isMultiple && <FlatList
-                            horizontal={true}
-                            data={selectedItems}
-                            ListEmptyComponent={ListEmpty}
-                            style={styles.selectedItemsWrapper}
-                            ItemSeparatorComponent={() => <View style={{ width: 10, backgroundColor: "yellow"}} />}
-                            renderItem={i =>
-                                <ItemSelected
-                                    item={i}
-                                    onPress={() => onSelectedItemPress(i)}
-                                />
-                            } />
-                        }
+                    {isMultiple && <FlatList
+                        horizontal={true}
+                        data={selectedItems}
+                        ListEmptyComponent={ListEmpty}
+                        style={styles.selectedItemsWrapper}
+                        ItemSeparatorComponent={() => <View style={{width: 10, backgroundColor: "yellow"}}/>}
+                        renderItem={i =>
+                            <ItemSelected
+                                item={i}
+                                onPress={() => onSelectedItemPress(i)}
+                            />
+                        }/>
+                    }
 
-                        {selectedItems.length > 0 && <Button title="limpiar" onPress={clearValues} />}
-                        <BottomSheetTextInput
-                            value={searchValue}
-                            style={styles.textInput}
-                            onChangeText={(text) => {
-                                onSearchTextChange(text)
-                            }}
-                        />
+                    {selectedItems.length > 0 && <Button title="limpiar" onPress={clearValues}/>}
+                    <BottomSheetTextInput
+                        value={searchValue}
+                        style={styles.textInput}
+                        onChangeText={(text) => {
+                            onSearchTextChange(text)
+                        }}
+                    />
+
+                    {isDataLoading ? (
+                        <ActivityIndicator/>
+                    ) : (
+
                         <BottomSheetFlatList
                             data={data}
                             keyExtractor={(i) => i.id}
@@ -108,35 +131,39 @@ export default function CustomSelectTwo({ onChange, searchValue, onSearchTextCha
                             keyboardDismissMode="interactive"
                             indicatorStyle="black"
                             contentContainerStyle={styles.contentContainer}
-                        >
-                        </BottomSheetFlatList>
-                    </BottomSheetModal>
-                </View>
-            </BottomSheetModalProvider>
+                            ListEmptyComponent={<EmptlyListComponent />}
+                        />
+                    )}
+                </BottomSheetModal>
+            </View>
+        </BottomSheetModalProvider>
     );
 }
 
-const ItemSelected = ({item, onPress}) => <Pressable style={styles.selectedItem} onPress={onPress}>
-        <Text style={styles.selectedItemText}>{item.item}</Text>
-    </Pressable>
+const EmptlyListComponent = () => <View><Text style={styles.emptyListText}>Sin resultados</Text></View>
+const ItemSelected = ({item: {item}, onPress}) => <Pressable style={styles.selectedItem} onPress={onPress}>
+    <Text style={styles.selectedItemText}>{item.name}</Text>
+</Pressable>
 
 const ListEmpty = () => <Text>Seleccione clientes</Text>
 
 const styles = StyleSheet.create({
+    emptyListText: {
+      textAlign: "center",
+      marginVertical: 8
+    },
     mainPresstable: {
-      borderWidth: 1,
-      borderColor: "gray",
-      borderRadius: 2,
+        borderWidth: 1,
+        borderColor: "gray",
+        borderRadius: 2,
         padding: 8
     },
     selectedItemsWrapper: {
         flexGrow: 0
     },
     selectedItem: {
-        display: "flex",
-        flexDirection: "row",
         borderWidth: 1,
-        padding:10,
+        padding: 10,
         borderColor: 'rgba(0,0,0,.2)',
         backgroundColor: "white",
     },
