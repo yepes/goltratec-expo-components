@@ -1,15 +1,11 @@
-# Expo Router Example
+# Goltratec expo playground
 
-Use [`expo-router`](https://expo.github.io/router) to build native navigation using files in the `app/` directory.
+Componentes de prueba que usamos con expo. Recopilación de ideas / ejemplos de componentes que tienen un UX diferente en móvil y en web
 
-## 🚀 How to use
+## 🚀 Uso
 
-```sh
-npx create-react-native-app -t with-router
-```
+Cada componente tiene su carpeta en src/components con un readme con su uso. Cada componente tiene una página con un ejemplo de implementación
 
-## 📝 Notes
+## 🛠️ Componentes
 
-- [Expo Router: Docs](https://expo.github.io/router)
-- [Expo Router: Repo](https://github.com/expo/router)
-- [Request for Comments](https://github.com/expo/router/discussions/1)
+[Custom Select 2](./src/components/CustomSelectTwo/readme.md): Típica selección de la parte N de una relación. En movil es un bottom sheet, mientras que en web es react-select. 
