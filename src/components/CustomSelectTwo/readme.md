@@ -29,4 +29,4 @@ En móvil es un [bottom sheet](https://gorhom.github.io/react-native-bottom-shee
 
 ## Notas
 
-Si se va a poner contenido después del componente (que es lo normal) y el contenido de la vista se superpone al del bottom tab en móvil, poner ```<BottomSheetModalProvider>``` en la vista o en el razi de la app a modo provider.
+Si se va a poner contenido después del componente (que es lo normal) y el contenido de la vista se superpone al del bottom tab en móvil, poner ```<BottomSheetModalProvider>``` en la vista o en el raiz de la app a modo provider.
