@@ -8,15 +8,11 @@ const CustomSelectTwoNative = <T extends unknown>(props: ICustomSelectTwoNative<
     const {
         isDataLoading,
         onChange,
-        searchValue,
         onSearchTextChange,
-        selectedItems,
         data,
-        clearValues,
         isMultiple,
         getOptionValue,
         getOptionLabel,
-        onInputChange
     } = props
     return <View>
         <Select

@@ -118,8 +118,3 @@ const s = StyleSheet.create({
         flex: 1
     }
 })
-
-// todo
-/**
- * Diferencia entre onInputChange y onSearchtextChange
- */
