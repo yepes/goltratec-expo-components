@@ -20,7 +20,8 @@ export interface ICustomSelectTwoNative<T> {
     getOptionValue: (option: T) => string;
 
     /**
-     * Callback que recibe todos los elementos seleccionados
+     * Callback que se llama cada vez que se selecciona o deselecciona un elemento.
+     * Recibe un array todos los elementos seleccionados
      * @param items
      */
     onChange: (items: T[]) => void;
@@ -45,13 +46,6 @@ export interface ICustomSelectTwoNative<T> {
      * Sólo para móvil
      */
     clearValues: () => void;
-
-    /**
-     * Callback al que se llama cuando el usuario introduce algo en el campo de búsqueda
-     * Sólo para móvil
-     * @param value
-     */
-    onInputChange: (value: string) => void;
 
     /**
      * Texto a modo de ayuda.
