@@ -31,12 +31,17 @@ export default function SelectTwo() {
     })
     const [selectedItems, setSelectedItems] = useState([]);
     const onChange = (items: People[]) => {
+        console.log('onChange triggered');
         console.log(items);
         setSelectedItems(items);
     }
 
     const clearValues = () => {
         setSelectedItems(isMultiple ? [] : undefined)
+    }
+
+    const onInputChange = () => {
+        console.log('onInputChange')
     }
 
     return <BottomSheetModalProvider>
@@ -69,7 +74,7 @@ export default function SelectTwo() {
             getOptionLabel={item => item.name}
             getOptionValue={item => item.url}
             helpText="Selecciona clientes"
-            onInputChange={console.log}
+            onInputChange={onInputChange}
         />
 
         <Text>There is more content below</Text>
