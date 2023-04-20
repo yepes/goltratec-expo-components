@@ -9,12 +9,14 @@ export interface ICustomSelectTwoNative<T> {
 
     /**
      * Callback que devuelve una cadena que será la que se mostrará en pantalla por item
+     * Tanto para web como para móvil
      * @param option
      */
     getOptionLabel: (option: T) => string;
 
     /**
      * Callback para definir el value que va a tener cada option
+     * Tanto para web como para móvil
      * @param option
      */
     getOptionValue: (option: T) => string;
@@ -28,11 +30,13 @@ export interface ICustomSelectTwoNative<T> {
 
     /**
      * Array con los elementos seleccionados
+     * Tanto para web como para móvil
      */
     selectedItems: T[];
 
     /**
      * Si los elementos se están cargando
+     * Tanto para web como para móvil
      */
     isDataLoading: boolean;
 
@@ -61,7 +65,7 @@ export interface ICustomSelectTwoNative<T> {
 
     /**
      * Callback al que se llama cuando el usuario introduce algo en el campo de búsqueda
-     * Sólo para móvil
+     * Tanto para web como para móvil
      * @param value
      */
     onSearchTextChange: (value: string) => void;

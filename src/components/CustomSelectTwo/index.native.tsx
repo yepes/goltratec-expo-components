@@ -58,18 +58,18 @@ const CustomBackdrop = ({animatedIndex, style}: BottomSheetBackdropProps) => {
 
 
 export default function IndexNative({
-                                        isDataLoading,
-                                        onChange,
-                                        searchValue,
-                                        onSearchTextChange,
-                                        selectedItems,
-                                        data,
-                                        clearValues,
-                                        isMultiple,
-                                        getOptionLabel = _getOptionLabel,
-                                        getOptionValue = _getOptionValue,
-                                        helpText
-                                    }) {
+    isDataLoading,
+    onChange,
+    searchValue,
+    onSearchTextChange,
+    selectedItems,
+    data,
+    clearValues,
+    isMultiple,
+    getOptionLabel = _getOptionLabel,
+    getOptionValue = _getOptionValue,
+    helpText
+}) {
 
     const sheetRef = useRef(null);
 
@@ -145,7 +145,8 @@ export default function IndexNative({
                     ref={sheetRef}
                     snapPoints={snapPoints}
                     onChange={handleSheetChange}
-                    keyboardBehavior={Platform.OS === 'ios' ? "interactive" : 'fullScreen'}
+                    // keyboardBehavior={Platform.OS === 'ios' ? "interactive" : 'fullScreen'}
+                    keyboardBehavior="interactive"
                     keyboardBlurBehavior="restore"
                     backdropComponent={(backgdropProps) => <CustomBackdrop {...backgdropProps}  />}
                     style={styles.modal}
