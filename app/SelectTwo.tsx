@@ -74,7 +74,6 @@ export default function SelectTwo() {
             getOptionLabel={item => item.name}
             getOptionValue={item => item.url}
             helpText="Selecciona clientes"
-            onInputChange={onInputChange}
         />
 
         <Text>There is more content below</Text>
