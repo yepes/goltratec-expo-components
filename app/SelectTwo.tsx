@@ -19,6 +19,13 @@ interface People {
     url: string;
 };
 
+ const CustomSelectedComponent = ({ isSelected, item }: { isSelected: boolean, item: People}) => {
+    return <View>
+        <Text>{isSelected.toString()}</Text>
+        <Text>{item.name}</Text>
+    </View>
+}
+
 
 export default function SelectTwo() {
 
@@ -74,6 +81,7 @@ export default function SelectTwo() {
             getOptionLabel={item => item.name}
             getOptionValue={item => item.url}
             helpText="Selecciona clientes"
+
         />
 
         <Text>There is more content below</Text>

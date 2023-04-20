@@ -1,3 +1,5 @@
+import React from "react";
+
 /**
  *
  */
@@ -69,4 +71,6 @@ export interface ICustomSelectTwoNative<T> {
      * @param value
      */
     onSearchTextChange: (value: string) => void;
+
+    MobileSelectedComponent?: React.FC<{isSelected: boolean, item: T}>
 }

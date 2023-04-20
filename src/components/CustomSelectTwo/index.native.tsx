@@ -8,7 +8,15 @@ import {
 import React, {useCallback, useMemo, useRef} from "react";
 import Animated, {Extrapolate, interpolate, useAnimatedStyle} from "react-native-reanimated";
 import {NativeViewGestureHandler} from "react-native-gesture-handler";
+import {ICustomSelectTwoNative} from "./types";
+import NativeSelectedComponent from "./NativeSelectedComponent";
 
+
+const EmptlyListComponent = () => <View><Text style={styles.emptyListText}>Sin resultados</Text></View>
+
+const ItemSelected = ({item: {item}, onPress, getOptionLabel}) => <Pressable style={styles.selectedItem} onPress={onPress}>
+    <Text style={styles.selectedItemText}>{getOptionLabel(item)}</Text>
+</Pressable>
 
 // interface CustomSelectTwoNative<T> {
 //     data: T[];
@@ -47,24 +55,26 @@ const CustomBackdrop = ({animatedIndex, style}: BottomSheetBackdropProps) => {
 };
 
 
-export default function IndexNative({
-    isDataLoading,
-    onChange,
-    searchValue,
-    onSearchTextChange,
-    selectedItems,
-    data,
-    clearValues,
-    isMultiple,
-    getOptionLabel = _getOptionLabel,
-    getOptionValue = _getOptionValue,
-    helpText
-}) {
+const CustomSelectTwoNative = <T extends unknown>(props: ICustomSelectTwoNative<T>) => {
+
+
+    const {
+        isDataLoading,
+        onChange,
+        searchValue,
+        onSearchTextChange,
+        selectedItems,
+        data,
+        clearValues,
+        isMultiple,
+        getOptionLabel = _getOptionLabel,
+        getOptionValue = _getOptionValue,
+        helpText,
+        MobileSelectedComponent = NativeSelectedComponent
+    } = props;
 
     const sheetRef = useRef(null);
-
     const snapPoints = useMemo(() => ["80%"], []);
-
 
     // callbacks
     const handleSheetChange = useCallback((index) => {
@@ -91,8 +101,6 @@ export default function IndexNative({
             onChange(res);
         } else
             onChange(item);
-
-
     }
 
     const renderItem = useCallback(
@@ -108,7 +116,7 @@ export default function IndexNative({
                     <Text style={styles.title}>{getOptionLabel(item)}</Text>
                 </View>
 
-                <View style={[styles.button, isSelected && styles.buttonSelected]}/>
+                <MobileSelectedComponent isSelected={isSelected} item={item} />
             </Pressable>
         }, [selectedItems]
     );
@@ -195,11 +203,7 @@ export default function IndexNative({
     );
 }
 
-const EmptlyListComponent = () => <View><Text style={styles.emptyListText}>Sin resultados</Text></View>
-const ItemSelected = ({item: {item}, onPress, getOptionLabel}) => <Pressable style={styles.selectedItem}
-                                                                             onPress={onPress}>
-    <Text style={styles.selectedItemText}>{getOptionLabel(item)}</Text>
-</Pressable>
+export default CustomSelectTwoNative;
 
 
 const styles = StyleSheet.create({
@@ -270,18 +274,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
-    },
-    button: {
-        backgroundColor: 'gray',
-        width: 40,
-        height: 40,
-        borderRadius: 50,
-    },
-    buttonSelected: {
-        backgroundColor: 'red',
-        width: 40,
-        height: 40,
-        borderRadius: 10,
     },
     item: {
         flexDirection: "row",
