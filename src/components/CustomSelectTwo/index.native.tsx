@@ -1,18 +1,8 @@
-import {
-    Button,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
-    Platform,
-    FlatList,
-    ActivityIndicator
-} from "react-native";
+import {ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View} from "react-native";
 import {
     BottomSheetBackdropProps,
     BottomSheetFlatList,
     BottomSheetModal,
-    BottomSheetModalProvider,
     BottomSheetTextInput
 } from "@gorhom/bottom-sheet";
 import React, {useCallback, useMemo, useRef} from "react";

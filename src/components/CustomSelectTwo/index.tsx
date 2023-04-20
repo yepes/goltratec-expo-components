@@ -1,4 +1,4 @@
-import {View, Text} from "react-native";
+import {View} from "react-native";
 import Select from "react-select";
 import React from "react";
 import {ICustomSelectTwoNative} from './types'
