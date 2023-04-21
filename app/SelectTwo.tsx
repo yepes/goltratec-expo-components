@@ -19,7 +19,7 @@ interface People {
     url: string;
 };
 
- const CustomSelectedComponent = ({ isSelected, item }: { isSelected: boolean, item: People}) => {
+ const CustomSampleSelectedComponent = ({ isSelected, item }: { isSelected: boolean, item: People}) => {
     return <View>
         <Text>{isSelected.toString()}</Text>
         <Text>{item.name}</Text>
@@ -81,7 +81,7 @@ export default function SelectTwo() {
             getOptionLabel={item => item.name}
             getOptionValue={item => item.url}
             helpText="Selecciona clientes"
-
+            // MobileSelectedComponent={CustomSampleSelectedComponent}
         />
 
         <Text>There is more content below</Text>

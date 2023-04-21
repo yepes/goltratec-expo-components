@@ -27,6 +27,14 @@ En móvil es un [bottom sheet](https://gorhom.github.io/react-native-bottom-shee
 />
 ```
 
+### Composición
+
+Es posible pasar componentes para personalizar como se ven los elementos.
+
+De momento, está implementado MobileSelectedComponent, que es el círculo que marca si un elemento está o no está seleccionado.
+
+Ver ese ejemplo de implementación para los que haga falta personalizar en el futuro. Se irán implementando según hagan falta.
+
 ## Notas
 
 Si se va a poner contenido después del componente (que es lo normal) y el contenido de la vista se superpone al del bottom tab en móvil, poner ```<BottomSheetModalProvider>``` en la vista o en el raiz de la app a modo provider.

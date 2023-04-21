@@ -9,15 +9,13 @@ export default NativeSelectedComponent;
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: 'gray',
-        width: 40,
-        height: 40,
+        width: 24,
+        height: 24,
         borderRadius: 50,
+        borderWidth:1,
+        borderColor: 'gray',
     },
     buttonSelected: {
-        backgroundColor: 'red',
-        width: 40,
-        height: 40,
-        borderRadius: 10,
+        backgroundColor: 'rgba(0,0,0,.1)',
     },
 })
