@@ -2,7 +2,6 @@ import CustomSelectTwoNative from "../src/components/CustomSelectTwo";
 import React, {useState} from "react";
 import {StyleSheet, Text, View} from "react-native";
 import {useQuery} from "@tanstack/react-query";
-import {Test} from "../src/components/Test";
 import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
 
 
