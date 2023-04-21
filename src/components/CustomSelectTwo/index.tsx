@@ -1,28 +1,26 @@
-import {View} from "react-native";
+import {View, Text} from "react-native";
 import Select from "react-select";
 import React from "react";
-import {ICustomSelectTwoNative} from './types'
+import {BaseOption, ICustomSelectTwoNative} from './types'
 
-const CustomSelectTwoNative = <T extends unknown>(props: ICustomSelectTwoNative<T>) => {
+const CustomSelectTwoNative = <T extends BaseOption>(props: ICustomSelectTwoNative<T>) => {
 
     const {
-        isDataLoading,
+        isLoading,
         onChange,
         onSearchTextChange,
-        data,
-        isMultiple,
-        getOptionValue,
-        getOptionLabel,
+        options,
+        isMulti,
+        defaultValue
     } = props
     return <View>
         <Select
-            isMulti={isMultiple}
-            options={data}
+            isMulti={isMulti}
+            options={options}
             onChange={onChange}
-            getOptionLabel={getOptionLabel}
-            isLoading={isDataLoading}
-            onInputChange={onSearchTextChange}
-            getOptionValue={getOptionValue}
+            isLoading={isLoading}
+            defaultValue={defaultValue}
+            // onInputChange={onSearchTextChange}
         />
     </View>
 }

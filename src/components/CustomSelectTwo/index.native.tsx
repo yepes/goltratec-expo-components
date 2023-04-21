@@ -1,4 +1,4 @@
-import {ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View, Platform} from "react-native";
 import {
     BottomSheetBackdropProps,
     BottomSheetFlatList,
@@ -8,24 +8,15 @@ import {
 import React, {useCallback, useMemo, useRef} from "react";
 import Animated, {Extrapolate, interpolate, useAnimatedStyle} from "react-native-reanimated";
 import {NativeViewGestureHandler} from "react-native-gesture-handler";
-import {ICustomSelectTwoNative} from "./types";
+import {BaseOption, ICustomSelectTwoNative} from "./types";
 import NativeSelectedComponent from "./NativeSelectedComponent";
 
 
 const EmptlyListComponent = () => <View><Text style={styles.emptyListText}>Sin resultados</Text></View>
 
-const ItemSelected = ({item: {item}, onPress, getOptionLabel}) => <Pressable style={styles.selectedItem} onPress={onPress}>
-    <Text style={styles.selectedItemText}>{getOptionLabel(item)}</Text>
+const ItemSelected = ({item: {item}, onPress}) => <Pressable style={styles.selectedItem} onPress={onPress}>
+    <Text style={styles.selectedItemText}>{item.label}</Text>
 </Pressable>
-
-// interface CustomSelectTwoNative<T> {
-//     data: T[];
-//     getOptionLabel: (option: T) => string;
-//     isDataLoading: boolean;
-//
-// }
-export const _getOptionLabel = (option) => option.name
-export const _getOptionValue = (option) => option.value
 
 const CustomBackdrop = ({animatedIndex, style}: BottomSheetBackdropProps) => {
 
@@ -55,20 +46,18 @@ const CustomBackdrop = ({animatedIndex, style}: BottomSheetBackdropProps) => {
 };
 
 
-const CustomSelectTwoNative = <T extends unknown>(props: ICustomSelectTwoNative<T>) => {
+const CustomSelectTwoNative = <T extends BaseOption>(props: ICustomSelectTwoNative<T>) => {
 
 
     const {
-        isDataLoading,
+        isLoading,
         onChange,
         searchValue,
         onSearchTextChange,
-        selectedItems,
-        data,
+        defaultValue,
+        options,
         clearValues,
-        isMultiple,
-        getOptionLabel = _getOptionLabel,
-        getOptionValue = _getOptionValue,
+        isMulti,
         helpText,
         MobileSelectedComponent = NativeSelectedComponent
     } = props;
@@ -90,35 +79,39 @@ const CustomSelectTwoNative = <T extends unknown>(props: ICustomSelectTwoNative<
 
     const onItemPress = (item) => {
 
-        if (isMultiple) {
-            const isSelected = selectedItems.includes(item);
-            let res = [];
-            if (isSelected) {
-                res = selectedItems.filter(i => i !== item)
-            } else {
-                res = [...selectedItems, item]
-            }
-            onChange(res);
-        } else
-            onChange(item);
+        // if (isMulti) {
+        const isSelected = defaultValue.some(i => i.value === item.value);
+        console.log('selected items');
+        console.log(defaultValue);
+        console.log(item);
+        let res = [];
+        if (isSelected) {
+            res = defaultValue.filter(i => JSON.stringify(i) !== JSON.stringify(item))
+        } else {
+            res = [...defaultValue, item]
+        }
+        onChange(res);
+        // } else
+        //     onChange(item);
     }
 
     const renderItem = useCallback(
         (v) => {
 
             const {item, index} = v
-            const isSelected = isMultiple ? selectedItems.includes(item) : JSON.stringify(selectedItems) === JSON.stringify(item)
+            // const isSelected = isMulti ? defaultValue.includes(item) : JSON.stringify(defaultValue) === JSON.stringify(item)
+            const isSelected = defaultValue.some(i => i.value === item.value)
             return <Pressable style={styles.itemContainer} key={index} onPress={() => {
                 onItemPress(item)
             }}>
 
                 <View>
-                    <Text style={styles.title}>{getOptionLabel(item)}</Text>
+                    <Text style={styles.title}>{item.label}</Text>
                 </View>
 
                 <MobileSelectedComponent isSelected={isSelected} item={item} />
             </Pressable>
-        }, [selectedItems]
+        }, [defaultValue]
     );
 
     const onSelectedItemPress = (item) => {
@@ -130,21 +123,16 @@ const CustomSelectTwoNative = <T extends unknown>(props: ICustomSelectTwoNative<
 
             <View>
                 <Pressable onPress={handlePresentModalPress} style={styles.mainPresstable}>
-                    <Text numberOfLines={1}
-                          ellipsizeMode="tail"
-                    >
-                        {isMultiple ?
-                            selectedItems.map(i => getOptionLabel(i)).join(", ") :
-                            selectedItems && getOptionLabel(selectedItems)
-                        }</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail">
+                        {defaultValue.map(i => i.label).join(", ")}
+                    </Text>
                 </Pressable>
 
                 <BottomSheetModal
                     ref={sheetRef}
                     snapPoints={snapPoints}
                     onChange={handleSheetChange}
-                    // keyboardBehavior={Platform.OS === 'ios' ? "interactive" : 'fullScreen'}
-                    keyboardBehavior="interactive"
+                    keyboardBehavior={Platform.OS === 'ios' ? "interactive" : null}
                     keyboardBlurBehavior="restore"
                     backdropComponent={(backgdropProps) => <CustomBackdrop {...backgdropProps}  />}
                     style={styles.modal}
@@ -152,16 +140,16 @@ const CustomSelectTwoNative = <T extends unknown>(props: ICustomSelectTwoNative<
 
                     <View style={styles.modalHeader}>
                         <Text>{helpText}</Text>
-                        {isMultiple && selectedItems.length > 0 &&
+                        {isMulti && defaultValue.length > 0 &&
                             <Pressable style={styles.modalHeaderButton} onPress={clearValues}>
                                 <Text>Limpiar</Text>
                             </Pressable>}
                     </View>
 
-                    {isMultiple && <>
+                    {isMulti && <>
                         <FlatList
                             horizontal={true}
-                            data={selectedItems}
+                            data={defaultValue}
                             style={styles.selectedItemsWrapper}
                             contentContainerStyle={styles.selectedItemsWrapperContent}
                             ItemSeparatorComponent={() => <View style={{width: 10}}/>}
@@ -169,7 +157,6 @@ const CustomSelectTwoNative = <T extends unknown>(props: ICustomSelectTwoNative<
                                 <ItemSelected
                                     item={i}
                                     onPress={() => onSelectedItemPress(i)}
-                                    getOptionLabel={getOptionLabel}
                                 />
                             }/>
 
@@ -183,13 +170,13 @@ const CustomSelectTwoNative = <T extends unknown>(props: ICustomSelectTwoNative<
                         }}
                     />
 
-                    {isDataLoading ? (
+                    {isLoading ? (
                         <ActivityIndicator/>
                     ) : (
 
                         <BottomSheetFlatList
-                            data={data}
-                            keyExtractor={(i) => getOptionValue(i)}
+                            data={options}
+                            keyExtractor={(i) => i.value}
                             renderItem={renderItem}
                             keyboardDismissMode="interactive"
                             indicatorStyle="black"

@@ -1,8 +1,11 @@
 import CustomSelectTwoNative from "../src/components/CustomSelectTwo";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {StyleSheet, Text, View} from "react-native";
 import {useQuery} from "@tanstack/react-query";
 import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
+
+import Select from "react-select";
+import {parse} from "expo-linking";
 
 
 interface People {
@@ -18,13 +21,19 @@ interface People {
     url: string;
 };
 
- const CustomSampleSelectedComponent = ({ isSelected, item }: { isSelected: boolean, item: People}) => {
+ const CustomSampleSelectedComponent = ({ isSelected, item }: { isSelected: boolean, item: ParsedData}) => {
     return <View>
         <Text>{isSelected.toString()}</Text>
-        <Text>{item.name}</Text>
+        <Text>{item.label}</Text>
     </View>
 }
 
+interface ParsedData {
+    value: string;
+    label: string;
+    eye_color: string;
+
+}
 
 export default function SelectTwo() {
 
@@ -35,8 +44,13 @@ export default function SelectTwo() {
         queryKey: ["swapi", search],
         queryFn: () => fetch(`https://swapi.dev/api/people/?search=${search}`).then(r => r.json())
     })
-    const [selectedItems, setSelectedItems] = useState([]);
-    const onChange = (items: People[]) => {
+
+    const parsedData: ParsedData[] = data?.results.map(item => ({value: item.url, label: item.name, eye_color: item.eye_color})) || []
+
+    // ponemos un elemento seleccionado a modo prueba
+    const [selectedItems, setSelectedItems] = useState([{
+        value: 'https://swapi.dev/api/people/1/', label: 'Luke Skywalker', eye_color: 'blue'}]);
+    const onChange = (items: ParsedData[]) => {
         console.log('onChange triggered');
         console.log(items);
         setSelectedItems(items);
@@ -46,73 +60,26 @@ export default function SelectTwo() {
         setSelectedItems(isMultiple ? [] : undefined)
     }
 
-    const onInputChange = () => {
-        console.log('onInputChange')
-    }
-
     return <BottomSheetModalProvider>
         <View style={s.wrapper}>
         <View>
-            <Text>Description here</Text>
 
             <Text>Selected Items:</Text>
-            <Text>{JSON.stringify({items: selectedItems.map(i => i.name)}, null, 2)}</Text>
+            <Text>{JSON.stringify(selectedItems, null, 2)}</Text>
         </View>
-        <Text>There is more content above</Text>
-        <Text>There is more content above</Text>
-        <Text>There is more content above</Text>
-        <Text>There is more content above</Text>
-        <Text>There is more content above</Text>
-        <Text>There is more content above</Text>
-        <Text>There is more content above</Text>
-        <Text>There is more content above</Text>
-        <Text>There is more content above</Text>
 
-        <CustomSelectTwoNative<People>
-            isMultiple={isMultiple}
+        <CustomSelectTwoNative<ParsedData>
+            isMulti={isMultiple}
             clearValues={clearValues}
-            data={data?.results || []}
+            options={parsedData}
             onChange={onChange}
-            selectedItems={selectedItems}
             searchValue={search}
             onSearchTextChange={v => setSearch(v)}
-            isDataLoading={isLoading}
-            getOptionLabel={item => item.name}
-            getOptionValue={item => item.url}
+            isLoading={isLoading}
             helpText="Selecciona clientes"
+            defaultValue={selectedItems}
             // MobileSelectedComponent={CustomSampleSelectedComponent}
         />
-
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-        <Text>There is more content below</Text>
-
-
-
     </View>
     </BottomSheetModalProvider>
 }

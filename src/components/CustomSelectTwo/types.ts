@@ -1,27 +1,18 @@
 import React from "react";
 
+export interface BaseOption {
+    value: string;
+    label: string;
+}
+
 /**
  *
  */
-export interface ICustomSelectTwoNative<T> {
+export interface ICustomSelectTwoNative<T extends BaseOption> {
     /**
      * Array con los valores a mostrar
      */
-    data: T[];
-
-    /**
-     * Callback que devuelve una cadena que será la que se mostrará en pantalla por item
-     * Tanto para web como para móvil
-     * @param option
-     */
-    getOptionLabel: (option: T) => string;
-
-    /**
-     * Callback para definir el value que va a tener cada option
-     * Tanto para web como para móvil
-     * @param option
-     */
-    getOptionValue: (option: T) => string;
+    options: T[];
 
     /**
      * Callback que se llama cada vez que se selecciona o deselecciona un elemento.
@@ -34,18 +25,18 @@ export interface ICustomSelectTwoNative<T> {
      * Array con los elementos seleccionados
      * Tanto para web como para móvil
      */
-    selectedItems: T[];
+    defaultValue: T[];
 
     /**
      * Si los elementos se están cargando
      * Tanto para web como para móvil
      */
-    isDataLoading: boolean;
+    isLoading: boolean;
 
     /**
      * Si es multiple
      */
-    isMultiple: boolean;
+    isMulti: boolean;
 
     /**
      * Callback al que se va a llamar cuando el usuario pinche en limpiar valores
@@ -71,6 +62,7 @@ export interface ICustomSelectTwoNative<T> {
      * @param value
      */
     onSearchTextChange: (value: string) => void;
+
 
     MobileSelectedComponent?: React.FC<{isSelected: boolean, item: T}>
 }
